@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import discord, asyncio
+import discord, asyncio, aiofiles
 from os.path import isdir,join
 from os import makedirs
 
@@ -33,7 +33,9 @@ async def on_message(message):
         if not(msgContained):
             Targetfile=join(logFolder,message.author.name+fileExt)
             MsgText=message.content.replace("\n"," ")+' '
-            open(Targetfile,'a').write(MsgText)
+            #open(Targetfile,'a').write(MsgText) #Replaced with aiofiles, for async support and support writing multiple files at a time.
+            async with aiofiles.open(Targetfile, mode='a') as f:
+                await f.write(MsgText)
             print('Wrote: "{0}" to "{1}"'.format(MsgText,str(Targetfile)))
     except Exception as e:
         print("Exception: "+str(e))
