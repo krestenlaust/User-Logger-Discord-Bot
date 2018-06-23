@@ -2,12 +2,12 @@
 import discord, asyncio, aiofiles
 from os.path import isdir,join
 from os import makedirs
-
+from re import sub
 logFolder = "Userlogs" #Folder with log files.
 fileExt = ".log" #The extension of the userlogs, if changed after logs are created multiple files will be created.
 avoidMsg = ["Image made with","Loading...","t!"] #Avoids messages containing one of these substrings.
 cmdPrefix = '$' #The prefix to the commands.
-tokenKey = "Ezh1NzEwNTMxDzU4NzuYdzY4.Dco2xQ.r3jHprruoNuIGDdfxroYa9G40Sk" #<< Not actual token, just an example.
+tokenKey = "NDYwMDQwOTExNDg1OTI2nDY1.DG_yJw.iY19n6GzjWC-IqT1slIgySUbyAM" #<< Not actual token, just an example.
 
 client = discord.Client()
 print("Initiating logger")
@@ -32,7 +32,10 @@ async def on_message(message):
             i+=1
         if not(msgContained):
             Targetfile=join(logFolder,message.author.name+fileExt)
-            MsgText=message.content.replace("\n"," ")+' '
+            MsgText=sub("[^a-zA-Z -<>:]+", "", message.content.replace("\n"," "))+' '
+            if(len(MsgText)<1):
+                return False
+            #MsgText=message.content.replace("\n"," ")+' ' #Replaced with ASCIInizing re.sub function.
             #open(Targetfile,'a').write(MsgText) #Replaced with aiofiles, for async support and support writing multiple files at a time.
             async with aiofiles.open(Targetfile, mode='a') as f:
                 await f.write(MsgText)
